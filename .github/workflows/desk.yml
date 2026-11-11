@@ -1,0 +1,54 @@
+name: Desk run (weekdays)
+
+on:
+  schedule:
+    # 13:30 UTC Mon-Fri = 7:00 PM IST, after the Portfolio Construction Lab
+    # (12:00 UTC) and the Valuation & Deal Lab (12:30 UTC) have refreshed.
+    - cron: "30 13 * * 1-5"
+  workflow_dispatch: {}
+
+permissions:
+  contents: write   # commit the run's results and the ledger
+
+# The ledger is append-only: two runs must never write at the same time.
+concurrency:
+  group: desk-run
+  cancel-in-progress: false
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      # The validator is validated first: exact optimiser, test statistics,
+      # the economic-profit valuation and ledger tamper detection.
+      - name: Test the desk's own tools
+        run: python -m pytest tests -q
+
+      # Validates both projects from their published data, seals today's
+      # forecasts and scores the ones whose outcomes have arrived.
+      - name: Desk run
+        run: python run.py
+
+      # Results are committed before the run is judged, so a failed check is
+      # published on the site and not hidden by a red build.
+      - name: Commit results and ledger
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add docs/data docs/ledger
+          git commit -m "Desk run $(date -u +'%Y-%m-%d')" || echo "No changes to commit"
+          git push
+
+      - name: Fail the workflow if any check failed or a chain is broken
+        run: python run.py --assert-clean

@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Verifiable Research Desk: Independent Model Validation and a Forecast Ledger</title>
+<meta name="description" content="Independent re-validation of a portfolio construction platform and a valuation platform from their published data, by different methods, plus a hash-chained ledger of forecasts that are scored once their outcomes are known." />
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='18' fill='%2305070b'/%3E%3Crect x='14' y='40' width='22' height='22' rx='5' fill='none' stroke='%2300f0ff' stroke-width='6'/%3E%3Crect x='39' y='40' width='22' height='22' rx='5' fill='none' stroke='%235aa8ff' stroke-width='6'/%3E%3Crect x='64' y='40' width='22' height='22' rx='5' fill='none' stroke='%238b7bff' stroke-width='6'/%3E%3Cpath d='M30 76 L44 88 L72 20' fill='none' stroke='%23ff2ec4' stroke-width='7' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E" />
+<link rel="stylesheet" href="assets/css/style.css" />
+</head>
+<body>
+<div class="boot" id="boot" role="status" aria-live="polite">
+  <svg class="boot-mark" viewBox="0 0 92 56" aria-hidden="true" focusable="false"><defs><linearGradient id="bm-boot" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#00f0ff"/><stop offset="1" stop-color="#8b7bff"/></linearGradient></defs><rect x="6" y="6" width="52" height="10" rx="3" fill="url(#bm-boot)"/><rect x="26" y="23" width="56" height="10" rx="3" fill="url(#bm-boot)"/><rect x="16" y="40" width="40" height="10" rx="3" fill="url(#bm-boot)"/></svg>
+  <span class="boot-label" id="boot-label">Loading validation results…</span>
+</div>
+<a class="skip-link" href="#main-content">Skip to main content</a>
+
+<header class="app-header">
+  <div class="brand">
+    <svg class="brand-mark" viewBox="0 0 92 56" aria-hidden="true" focusable="false"><defs><linearGradient id="bm-head" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#00f0ff"/><stop offset="1" stop-color="#8b7bff"/></linearGradient></defs><rect x="4" y="18" width="22" height="22" rx="5" fill="none" stroke="url(#bm-head)" stroke-width="5"/><rect x="33" y="18" width="22" height="22" rx="5" fill="none" stroke="url(#bm-head)" stroke-width="5"/><rect x="62" y="18" width="22" height="22" rx="5" fill="none" stroke="url(#bm-head)" stroke-width="5"/><line x1="26" y1="29" x2="33" y2="29" stroke="#8b7bff" stroke-width="4"/><line x1="55" y1="29" x2="62" y2="29" stroke="#8b7bff" stroke-width="4"/><path d="M38 44 L48 53 L70 6" fill="none" stroke="#ff2ec4" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    <div>
+      <h1>Verifiable Research Desk</h1>
+      <div class="sub">Independent model validation · forecast ledger · last run <span class="as-of" id="as-of">–</span></div>
+    </div>
+  </div>
+  <div class="header-tools">
+    <button type="button" class="btn signature" id="open-sheet" title="A print-ready one-page summary of this run">Run tear sheet ↗</button>
+    <span class="live-badge" id="head-badge">CHECKING…</span>
+  </div>
+</header>
+
+<section class="kpi-strip" aria-label="Run summary" id="kpi-strip"></section>
+
+<nav class="tab-nav" role="tablist" aria-label="Sections" id="tab-nav">
+  <button class="tab-btn" role="tab" data-tab="overview" id="tab-overview" aria-controls="panel-overview">01 · Overview</button>
+  <button class="tab-btn" role="tab" data-tab="portfolio" id="tab-portfolio" aria-controls="panel-portfolio">02 · Portfolio Lab Validation</button>
+  <button class="tab-btn" role="tab" data-tab="valuation" id="tab-valuation" aria-controls="panel-valuation">03 · Valuation Lab Validation</button>
+  <button class="tab-btn" role="tab" data-tab="ledger" id="tab-ledger" aria-controls="panel-ledger">04 · Forecast Ledger</button>
+  <button class="tab-btn" role="tab" data-tab="method" id="tab-method" aria-controls="panel-method">05 · Method</button>
+</nav>
+
+<main id="main-content">
+  <section class="tab-panel" id="panel-overview" role="tabpanel" aria-labelledby="tab-overview"></section>
+  <section class="tab-panel" id="panel-portfolio" role="tabpanel" aria-labelledby="tab-portfolio"></section>
+  <section class="tab-panel" id="panel-valuation" role="tabpanel" aria-labelledby="tab-valuation"></section>
+  <section class="tab-panel" id="panel-ledger" role="tabpanel" aria-labelledby="tab-ledger"></section>
+  <section class="tab-panel" id="panel-method" role="tabpanel" aria-labelledby="tab-method"></section>
+</main>
+
+<footer class="footer-note" id="footer-note"></footer>
+
+<div class="memo-overlay" id="memo-overlay" role="dialog" aria-modal="true" aria-label="Run tear sheet">
+  <div class="memo-bar">
+    <button type="button" class="btn signature" id="memo-print">Print / Save as PDF</button>
+    <button type="button" class="btn" id="memo-close">Close</button>
+  </div>
+  <article class="memo-page" id="memo-page"></article>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+<script>
+  // Hourly cache key: the results are refreshed every weekday.
+  document.write('<script src="data/desk-data.js?h=' + new Date().toISOString().slice(0, 13) + '"><\/script>');
+</script>
+<script src="assets/js/desk.js"></script>
+</body>
+</html>
